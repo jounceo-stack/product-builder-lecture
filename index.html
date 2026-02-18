@@ -1,19 +1,139 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>좋은Lotto Number Generator</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <title>로또 번호 추천기 (5게임)</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .game {
+            margin: 20px 0;
+        }
+
+        .ball {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            margin: 5px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #ffcc00;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #ffdb4d;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Lotto Number Generator</h1>
-        <div id="lotto-numbers" class="lotto-numbers-container"></div>
-        <button id="generate-btn">Generate Numbers</button>
-    </div>
-    <script src="main.js"></script>
+
+<div class="container">
+    <h1>🎯 로또 번호 추천기 (5게임)</h1>
+    <div id="numbers">버튼을 눌러 번호를 생성하세요!</div>
+    <button onclick="generateLotto()">번호 5게임 생성하기</button>
+</div>
+
+<script>
+    function generateSingleGame() {
+        let numbers = [];
+
+        while (numbers.length < 7) {
+            let num = Math.floor(Math.random() * 45) + 1;
+            if (!numbers.includes(num)) {
+                numbers.push(num);
+            }
+        }
+
+        const mainNumbers = numbers.slice(0, 6).sort((a, b) => a - b);
+        const bonusNumber = numbers[6];
+
+        return { mainNumbers, bonusNumber };
+    }
+
+    function getColor(num) {
+        if (num <= 10) return "#fbc400";
+        else if (num <= 20) return "#69c8f2";
+        else if (num <= 30) return "#ff7272";
+        else if (num <= 40) return "#aaaaaa";
+        else return "#b0d840";
+    }
+
+    function generateLotto() {
+        const numbersDiv = document.getElementById("numbers");
+        numbersDiv.innerHTML = "";
+
+        for (let i = 1; i <= 5; i++) {
+            const gameDiv = document.createElement("div");
+            gameDiv.classList.add("game");
+
+            const title = document.createElement("h3");
+            title.innerText = "🎲 " + i + "게임";
+            gameDiv.appendChild(title);
+
+            const { mainNumbers, bonusNumber } = generateSingleGame();
+
+            // 메인 번호 6개
+            mainNumbers.forEach(num => {
+                const ball = document.createElement("span");
+                ball.classList.add("ball");
+                ball.innerText = num;
+                ball.style.backgroundColor = getColor(num);
+                gameDiv.appendChild(ball);
+            });
+
+            // + 표시
+            const plus = document.createElement("span");
+            plus.innerText = " + ";
+            plus.style.fontSize = "20px";
+            gameDiv.appendChild(plus);
+
+            // 보너스 번호
+            const bonusBall = document.createElement("span");
+            bonusBall.classList.add("ball", "bonus");
+            bonusBall.innerText = bonusNumber;
+            bonusBall.style.backgroundColor = getColor(bonusNumber);
+            gameDiv.appendChild(bonusBall);
+
+            numbersDiv.appendChild(gameDiv);
+        }
+    }
+</script>
+
 </body>
 </html>
